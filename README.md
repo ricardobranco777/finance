@@ -40,7 +40,7 @@ options:
   -h, --help            show this help message and exit
   -n MAX_ROWS, --max-rows MAX_ROWS
                         maximum number of rows to display (default: 5)
-  -s {strike,volume,openInterest}, --sort {strike,volume,openInterest}
+  -s {strike,volume,OI}, --sort {strike,volume,OI}
                         sorting key for the options (default: strike)
   -r, --reverse         reverse the sorting order (default: False)
   -w WEEK, --week WEEK  week offset from the current week (0 = this week, 1 = next week, etc) (default: 0)

@@ -74,7 +74,7 @@ def main():
         "-s",
         "--sort",
         type=str,
-        choices=["strike", "volume", "openInterest"],
+        choices=["strike", "volume", "OI"],
         default="strike",
         help="sorting key for the options",
     )
@@ -89,6 +89,8 @@ def main():
         help="week offset from the current week (0 = this week, 1 = next week, etc)",
     )
     args = parser.parse_args()
+
+    args.sort = args.sort.replace("OI", "openInterest")
 
     # Get options data
     print_options(
