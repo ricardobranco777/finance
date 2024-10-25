@@ -43,5 +43,5 @@ options:
   -s {strike,volume,OI}, --sort {strike,volume,OI}
                         sorting key for the options (default: strike)
   -r, --reverse         reverse the sorting order (default: False)
-  -w WEEK, --week WEEK  week offset from the current week (0 = this week, 1 = next week, etc) (default: 0)
+  -w WEEK, --week WEEK  week offset from the current week (0 = this week, 1 = next week, -1 = all weeks, etc) (default: 0)
 ```
