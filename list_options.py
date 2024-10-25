@@ -5,39 +5,25 @@ List calls & put options for the specified ticker at some expiration date
 
 import argparse
 import sys
-from datetime import date, timedelta
 
 import pandas as pd
 import yfinance as yf  # type: ignore
 
 
-def get_friday_of_week(week_offset: int) -> str:
-    """
-    Calculate the date of Friday for the specified week offset
-    """
-    today = date.today()
-    # Calculate the number of days to add for the specified week
-    days_to_friday = (4 - today.weekday()) + (week_offset * 7)  # 4 is Friday
-    friday_date = today + timedelta(days=days_to_friday)
-    return friday_date.isoformat()
-
-
-def list_options(
+def print_options(
     ticker: str,
-    expiration_date: str,
+    week_offset: int = 0,
     sort_key: str = "strike",
     reverse: bool = False,
     max_rows: int = 5,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+) -> None:
     """
     Get options for ticker
     """
     stock = yf.Ticker(ticker)
 
-    if expiration_date not in stock.options:
-        sys.exit(
-            f"ERROR: Expiration date {expiration_date} is not available for {ticker}"
-        )
+    expiration_date = stock.options[week_offset]
+    print(f"Expiration date: {expiration_date}")
 
     # Fetch call and put options data for the given expiration date
     calls = stock.option_chain(expiration_date).calls
@@ -63,7 +49,9 @@ def list_options(
         ["contractSymbol", "ITM/OTM", "strike", "IV", "volume", "openInterest"]
     ].head(max_rows)
 
-    return calls, puts
+    # Print results
+    print("Calls Options:\n", calls.to_string(index=False))
+    print("Puts Options:\n", puts.to_string(index=False))
 
 
 def main():
@@ -102,17 +90,10 @@ def main():
     )
     args = parser.parse_args()
 
-    # Get the expiration date based on the week offset
-    expiration_date = get_friday_of_week(args.week)
-
     # Get options data
-    calls_data, puts_data = list_options(
-        args.ticker, expiration_date, args.sort, args.reverse, args.max_rows
+    print_options(
+        args.ticker, args.week, args.sort, args.reverse, args.max_rows
     )
-
-    # Print results
-    print("Calls Options:\n", calls_data.to_string(index=False))
-    print("Puts Options:\n", puts_data.to_string(index=False))
 
 
 if __name__ == "__main__":
