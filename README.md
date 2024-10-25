@@ -1,4 +1,10 @@
 
+## Requirements
+
+- Python 3
+- pandas
+- yfinance
+
 ## [list_options](list_options.py)
 
 Example:
