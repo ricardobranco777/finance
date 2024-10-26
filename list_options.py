@@ -18,6 +18,10 @@ def process_options(options: pd.DataFrame, expiration_date: str) -> pd.DataFrame
     options["ITM/OTM"] = options["inTheMoney"].apply(lambda x: "ITM" if x else "OTM")
     # Convert implied volatility to a fixed-width percentage format
     options["IV"] = (options["impliedVolatility"] * 100).round(2)
+    # Calculate Volume to openInterest ratio. Avoid division by zero
+    options["VOI_Ratio"] = options["volume"] / options["openInterest"].replace(
+        0, float("nan")
+    )
     # Drop columns with all NaN values
     options.dropna(axis=1, how="all", inplace=True)
     return options
@@ -63,6 +67,7 @@ def print_options(
         "strike",
         "volume",
         "openInterest",
+        "VOI_Ratio",
         "IV",
     ]
 
@@ -111,7 +116,10 @@ def main():
     )
     args = parser.parse_args()
 
-    args.sort = args.sort.replace("OI", "openInterest")
+    aliases = {
+        "OI": "openInterest",
+    }
+    args.sort = aliases.get(args.sort, args.sort)
 
     # Get options data
     print_options(args.ticker, args.week, args.sort, args.reverse, args.max_rows)
